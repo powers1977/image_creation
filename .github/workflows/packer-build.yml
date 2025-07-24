@@ -1,0 +1,36 @@
+name: Packer Image Build
+
+on:
+  workflow_dispatch: # Allows you to trigger it manually from GitHub UI
+
+jobs:
+  build-image:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Install Packer 1.8.6
+      run: |
+        curl -fsSL https://releases.hashicorp.com/packer/1.8.6/packer_1.8.6_linux_amd64.zip -o packer.zip
+        unzip packer.zip
+        sudo mv packer /usr/local/bin/
+        packer version
+
+    - name: Create Packer Variables File
+      run: |
+        cat <<EOF > variables.pkrvars.json
+        {
+          "client_id": "${{ secrets.AZURE_CLIENT_ID }}",
+          "client_secret": "${{ secrets.AZURE_CLIENT_SECRET }}",
+          "tenant_id": "${{ secrets.AZURE_TENANT_ID }}",
+          "subscription_id": "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+        }
+        EOF
+
+    - name: Run Packer Build
+      run: |
+        packer build -var-file=variables.pkrvars.json packer.json
+
+
