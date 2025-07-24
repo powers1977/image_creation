@@ -12,7 +12,7 @@
         "resource_group": "devops-rg",
         "gallery_name": "devops_image_gallery",
         "image_name": "my_CentOS",
-        "image_version": "0.0.3",
+        "image_version": "0.0.4",
         "replication_regions": "East US"
       },
 
